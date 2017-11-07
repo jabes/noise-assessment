@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Justin\NoiseAssessment;
+
 final class Lottery
 {
   public static function getValidNumbers(array $numbers): array

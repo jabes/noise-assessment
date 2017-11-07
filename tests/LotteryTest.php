@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+use Justin\NoiseAssessment\Lottery;
 
 final class LotteryTest extends TestCase
 {

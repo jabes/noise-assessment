@@ -15,7 +15,7 @@ xdg-open http://localhost:8000/
 
 ```
 composer install
-vendor/bin/phpunit --bootstrap src/Lottery.php tests/LotteryTest.php
+vendor/bin/phpunit tests
 ```
 
 ### Winning Ticket!
