@@ -6,7 +6,7 @@ use Justin\NoiseAssessment\Lottery;
 
 final class LotteryTest extends TestCase
 {
-  public function testCanBeUsedAsString(): void
+  public function testValidNumbers(): void
   {
     $numbers = [
       '569815571556',
