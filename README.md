@@ -7,6 +7,7 @@ A PHP technical assessment made with ❤ for Noise Digital.
 ```
 git clone https://github.com/jabes/noise-assessment.git
 cd noise-assessment
+composer install --no-dev
 php -S localhost:8000
 xdg-open http://localhost:8000/
 ```
