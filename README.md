@@ -11,6 +11,13 @@ php -S localhost:8000
 xdg-open http://localhost:8000/
 ```
 
+### How To Test
+
+```
+composer install
+vendor/bin/phpunit --bootstrap src/Lottery.php tests/LotteryTest.php
+```
+
 ### Winning Ticket!
 
 Your favorite grandpa, Rick, is crazy about the lottery and even crazier about how he picks his “lucky” numbers. And even though his “never fail” strategy has yet to succeed, Grandpa Rick doesn't let that get him down.
@@ -27,8 +34,10 @@ For example, given the following strings:
 
 Your function should return:
 
+```
 4938532894754 -> 49 38 53 28 9 47 54
 1234567 -> 1 2 3 4 5 6 7
+```
 
 Additionally:
 
