@@ -6,6 +6,34 @@ namespace Justin\NoiseAssessment;
 final class Lottery
 {
 
+  private static function filterPermutations(array $permutations): array
+  {
+    $permutations = array_unique($permutations);
+    $permutations = array_values($permutations);
+
+    foreach ($permutations as $key => $permutation) {
+      $valid = true;
+      $digits = explode(' ', $permutation);
+
+      if (count($digits) !== 7) {
+        $valid = false;
+      } else {
+        foreach ($digits as $digit) {
+          if ($digit < 1 || $digit > 59) {
+            $valid = false;
+            break;
+          }
+        }
+      }
+
+      if (!$valid) {
+        unset($permutations[$key]);
+      }
+    }
+
+    return $permutations;
+  }
+
   private static function getPermutations(array $digits, int $index = 0, array $permutations = [], array $prepend = []): array
   {
     $new = [];
@@ -50,6 +78,7 @@ final class Lottery
         $all = array_merge($all, $permutations);
       }
 
+      $all = Lottery::filterPermutations($all);
       $valid_numbers[$number] = $all;
     }
 
