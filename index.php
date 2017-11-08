@@ -11,6 +11,20 @@ $valid_numbers = Lottery::getValidNumbers([
   '472844278465445',
 ]);
 
-foreach ($valid_numbers as $original_number => $valid_number) {
-  echo "{$original_number} -> {$valid_number}" . PHP_EOL;
-}
+?><!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Winning Ticket!</title>
+    <meta name="description" content="A PHP technical assessment made with ❤ for Noise Digital.">
+  </head>
+  <body>
+    <h1>Winning Ticket!</h1>
+    <p>A PHP technical assessment made with ❤ for Noise Digital.</p>
+    <ul>
+      <?php foreach ($valid_numbers as $original_number => $valid_number): ?>
+        <li><?= "{$original_number} → {$valid_number}" ?></li>
+      <?php endforeach; ?>
+    </ul>
+  </body>
+</html>
