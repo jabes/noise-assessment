@@ -131,7 +131,7 @@ final class Lottery
 
   /**
    * Finds valid lottery combinations given a series of numbers.
-   *getValidTickets
+   *
    * Example:
    * 4938532894754 -> 49 38 53 28 9 47 54
    * 1234567 -> 1 2 3 4 5 6 7
