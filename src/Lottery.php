@@ -9,7 +9,6 @@ final class Lottery
   private static function filterPermutations(array $permutations): array
   {
     $permutations = array_unique($permutations);
-    $permutations = array_values($permutations);
 
     foreach ($permutations as $key => $permutation) {
       $valid = true;
@@ -34,33 +33,59 @@ final class Lottery
     return $permutations;
   }
 
-  private static function getPermutations(array $digits, int $index = 0, array $permutations = [], array $prepend = []): array
+  private static function getPermutations(string $lottery_number): array
   {
-    $new = [];
+    $permutations = [];
 
-    $len = count($digits);
-    if ($index > $len - 1) return [];
+    $lottery_digits = str_split($lottery_number);
 
-    for ($i = 0; $i < $len; $i++) {
-      if ($i === $index) {
-        $a = $digits[$i];
-        $b = $digits[$i + 1];
-        $new[] = intval("{$a}{$b}");
-        $i += 1;
-      } else {
-        $new[] = $digits[$i];
+    $chars = [0, 1];
+    $size = count($lottery_digits);
+    $binary_combinations = Lottery::getCharCombinations($chars, $size);
+
+    foreach ($binary_combinations as $binary_combination) {
+      $binary_items = str_split($binary_combination);
+
+      $permutation = [];
+      for ($i = 0; $i < $size; $i++) {
+        $a = $lottery_digits[$i];
+        $b = $lottery_digits[$i + 1] ?? '';
+
+        $binary_item = $binary_items[$i];
+        if ($binary_item == 1) {
+          $permutation[] = (int)"{$a}{$b}";
+          $i += 1;
+        } else {
+          $permutation[] = $a;
+        }
+      }
+
+      $permutations[$binary_combination] = implode(' ', $permutation);
+    }
+
+    return $permutations;
+  }
+
+  private static function getCharCombinations(array $chars, int $size, array $combinations = []): array
+  {
+    # if it's the first iteration,
+    # the first set of combinations is the same as the set of characters
+    if (empty($combinations)) $combinations = $chars;
+
+    # we're done if we're at size 1
+    if ($size == 1) return $combinations;
+
+    # initialise array to put new values in
+    $new_combinations = [];
+
+    # loop through existing combinations and character set to create strings
+    foreach ($combinations as $combination) {
+      foreach ($chars as $char) {
+        $new_combinations[] = $combination . $char;
       }
     }
 
-    $prepended = array_merge($prepend, $new);
-    $permutation = implode(' ', $prepended);
-    $permutations[] = $permutation;
-
-    $removed = array_splice($new, 0, 1);
-    $prepend[] = $removed[0];
-
-    $permutations += Lottery::getPermutations($new, $index, $permutations, $prepend);
-    return $permutations;
+    return Lottery::getCharCombinations($chars, $size - 1, $new_combinations);
   }
 
   public static function getValidNumbers(array $numbers): array
@@ -68,18 +93,13 @@ final class Lottery
     $valid_numbers = [];
 
     foreach ($numbers as $number) {
-      $number_int = filter_var($number, FILTER_SANITIZE_NUMBER_INT);
-      $digits = str_split($number_int);
 
-      $all = [];
-      $len = count($digits);
-      for ($i = 0; $i < $len; $i++) {
-        $permutations = Lottery::getPermutations($digits, $i);
-        $all = array_merge($all, $permutations);
+      $permutations = Lottery::getPermutations($number);
+      $permutations = Lottery::filterPermutations($permutations);
+
+      foreach ($permutations as $permutation) {
+        $valid_numbers[$number] = $permutation;
       }
-
-      $all = Lottery::filterPermutations($all);
-      $valid_numbers[$number] = $all;
     }
 
     return $valid_numbers;
