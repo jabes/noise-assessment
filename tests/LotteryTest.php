@@ -10,7 +10,7 @@ final class LotteryTest extends TestCase
   public function testValidNumbers(): void
   {
     $this->assertEquals(
-      Lottery::getValidNumbers([
+      Lottery::getValidTickets([
         '569815571556',
         '4938532894754',
         '1234567',
@@ -26,7 +26,7 @@ final class LotteryTest extends TestCase
   public function testInvalidNumbers(): void
   {
     $this->assertEquals(
-      Lottery::getValidNumbers([
+      Lottery::getValidTickets([
         '472844278465445',
       ]),
       [

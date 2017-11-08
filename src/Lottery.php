@@ -13,16 +13,16 @@ final class Lottery
    * 3. Each series must contain exactly 7 numbers
    * 3. Each number must be between 1 and 59
    *
-   * @param array $permutations A list of lottery numbers to filter
+   * @param array $lottery_numbers A list of lottery numbers to filter
    * @return array
    */
-  private static function filterPermutations(array $permutations): array
+  private static function validateNumbers(array $lottery_numbers): array
   {
-    $permutations = array_unique($permutations);
+    $lottery_numbers = array_unique($lottery_numbers);
 
-    foreach ($permutations as $key => $permutation) {
+    foreach ($lottery_numbers as $key => $lottery_number) {
       $valid = true;
-      $digits = explode(' ', $permutation);
+      $digits = explode(' ', $lottery_number);
 
       if (count($digits) !== 7) {
         $valid = false;
@@ -36,11 +36,11 @@ final class Lottery
       }
 
       if (!$valid) {
-        unset($permutations[$key]);
+        unset($lottery_numbers[$key]);
       }
     }
 
-    return $permutations;
+    return $lottery_numbers;
   }
 
   /**
@@ -63,40 +63,39 @@ final class Lottery
    *  binary: 1 0 1 0 1 0 1 0 0 1 0 1 0
    *  output: 49 38 53 28 9 47 54
    *
-   * @param string $lottery_number The series of digits we will permutate
+   * @param string $number_string The series of digits we will permutate
    * @return array
    */
-  private static function getPermutations(string $lottery_number): array
+  private static function parseNumberString(string $number_string): array
   {
-    $permutations = [];
+    $lottery_numbers = [];
 
-    $lottery_digits = str_split($lottery_number);
+    $digits = str_split($number_string);
 
     $chars = [0, 1];
-    $size = count($lottery_digits);
-    $binary_combinations = Lottery::getCharCombinations($chars, $size);
+    $size = count($digits);
+    $binary_combinations = Lottery::getCharacterCombinations($chars, $size);
 
-    foreach ($binary_combinations as $binary_combination) {
-      $binary_items = str_split($binary_combination);
+    foreach ($binary_combinations as $binary_string) {
+      $lottery_number = [];
+      $binary_values = str_split($binary_string);
 
-      $permutation = [];
       for ($i = 0; $i < $size; $i++) {
-        $a = $lottery_digits[$i];
-        $b = $lottery_digits[$i + 1] ?? '';
-
-        $binary_item = $binary_items[$i];
-        if ($binary_item == 1) {
-          $permutation[] = (int)"{$a}{$b}";
+        $binary_value = $binary_values[$i];
+        if ($binary_value == 1) {
+          $a = $digits[$i];
+          $b = $digits[$i + 1] ?? '';
+          $lottery_number[] = (int)"{$a}{$b}";
           $i += 1;
         } else {
-          $permutation[] = $a;
+          $lottery_number[] = $digits[$i];
         }
       }
 
-      $permutations[$binary_combination] = implode(' ', $permutation);
+      $lottery_numbers[$binary_string] = implode(' ', $lottery_number);
     }
 
-    return $permutations;
+    return $lottery_numbers;
   }
 
   /**
@@ -117,7 +116,7 @@ final class Lottery
    * @param array $combinations The resulting array, passed for recursive purposes
    * @return array
    */
-  private static function getCharCombinations(array $chars, int $size, array $combinations = []): array
+  private static function getCharacterCombinations(array $chars, int $size, array $combinations = []): array
   {
     if (empty($combinations)) $combinations = $chars;
     if ($size == 1) return $combinations;
@@ -127,27 +126,27 @@ final class Lottery
         $new_combinations[] = $combination . $char;
       }
     }
-    return Lottery::getCharCombinations($chars, $size - 1, $new_combinations);
+    return Lottery::getCharacterCombinations($chars, $size - 1, $new_combinations);
   }
 
   /**
    * Finds valid lottery combinations given a series of numbers.
-   *
+   *getValidTickets
    * Example:
    * 4938532894754 -> 49 38 53 28 9 47 54
    * 1234567 -> 1 2 3 4 5 6 7
    *
-   * @param array $numbers A list of possible lottery numbers
+   * @param array $number_strings A list of possible lottery numbers
    * @return array
    */
-  public static function getValidNumbers(array $numbers): array
+  public static function getValidTickets(array $number_strings): array
   {
     $valid_numbers = [];
-    foreach ($numbers as $number) {
-      $permutations = Lottery::getPermutations($number);
-      $permutations = Lottery::filterPermutations($permutations);
-      foreach ($permutations as $permutation) {
-        $valid_numbers[$number] = $permutation;
+    foreach ($number_strings as $number_string) {
+      $lottery_numbers = Lottery::parseNumberString($number_string);
+      $lottery_numbers = Lottery::validateNumbers($lottery_numbers);
+      foreach ($lottery_numbers as $lottery_number) {
+        $valid_numbers[$number_string] = $lottery_number;
       }
     }
     return $valid_numbers;
